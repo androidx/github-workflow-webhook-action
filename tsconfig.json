@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "lib": [
+            "dom",
+            "es2015"
+        ],
+        "rootDir": "src",
+        "outDir": "built",
+        "noImplicitAny": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "jsx": "react",
+        "strict": true,
+        "declaration": true,
+        "noEmitOnError": true,
+        "inlineSourceMap": true,
+        "inlineSources": true
+    },
+    "exclude": [
+        "node_modules",
+        "built"
+    ],
+    "compileOnSave": true
+}

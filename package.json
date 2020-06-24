@@ -1,0 +1,30 @@
+{
+  "name": "github-workflow-webhook-action",
+  "version": "0.1.0",
+  "description": "A GitHub Workflow WebHook",
+  "author": "Rahul Ravikumar",
+  "license": "Apache-2.0",
+  "files": [
+    "src/**",
+    "app/**",
+    "built/**"
+  ],
+  "main": "built/index.js",
+  "types": "built/index.d.ts",
+  "scripts": {
+    "compile": "node_modules/.bin/tsc",
+    "format": "node_modules/.bin/clang-format -i -style=file --glob=src/**.ts",
+    "clean": "rm -rf built",
+    "watch": "node_modules/.bin/tsc --watch &"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.5",
+    "watchify": "^3.11.1",
+    "clang-format": "^1.4.0"
+  },
+  "dependencies": {
+    "@types/node": "^14.0.14",
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^3.0.0"
+  }
+}

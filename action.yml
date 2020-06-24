@@ -1,0 +1,20 @@
+name: 'GitHub Work Flow Hooks'
+description: 'A Web Hook for GitHub Workflows'
+inputs:
+  webhook-url:
+    description: 'The Web Hook URL where a HTTP POST will be delivered'
+    required: true
+  webhook-secret:
+    description: 'The Web Hook Secret sent via the X-GitHub-Secret HTTP Header' 
+    required: true
+  webhook-payload:
+    description: 'Additional payload data' 
+    required: false
+outputs:
+  status:
+    description: The result HTTP status code
+  statusTest:
+    description: The result HTTP status text
+runs:
+  using: 'node12'
+  main: 'index.js'
