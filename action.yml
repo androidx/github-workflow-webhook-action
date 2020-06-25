@@ -10,7 +10,7 @@ inputs:
     required: true
   secret:
     description: 'The Web Hook Secret sent via the X-GitHub-Secret HTTP Header' 
-    required: true
+    required: false
   payload:
     description: 'Additional payload data' 
     required: false

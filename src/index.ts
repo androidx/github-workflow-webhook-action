@@ -1,6 +1,6 @@
 import core = require('@actions/core');
 import github = require('@actions/github');
-import axios, { AxiosPromise } from 'axios';
+import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 
 async function deliver(url: string, secret: string, payload: string): Promise<AxiosPromise<{}>> {
   const workflow = github.context.workflow;
@@ -24,15 +24,18 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   }
 
   core.info(`Delivering ${JSON.stringify(requestBody)} to ${url}`);
-  const response = axios({
+
+  const requestConfig: AxiosRequestConfig = {
     url: url,
     method: 'POST',
-    headers: {
-      'X-GitHub-Secret': `${secret}`
-    },
     data: requestBody
-  });
-
+  };
+  if (secret) {
+    requestConfig['headers'] = {
+      'X-GitHub-Secret': `${secret}`
+    }
+  }
+  const response = axios(requestConfig);
   return response;
 }
 

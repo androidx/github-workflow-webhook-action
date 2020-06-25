@@ -9700,7 +9700,7 @@ function deliver(url, secret, payload) {
   var _a;
 
   return __awaiter(this, void 0, Promise, function () {
-    var workflow, repo, ref, sha, workFlowPaylod, pullRequestUrl, additionalPayload, requestBody, response;
+    var workflow, repo, ref, sha, workFlowPaylod, pullRequestUrl, additionalPayload, requestBody, requestConfig, response;
     return __generator(this, function (_b) {
       workflow = github.context.workflow;
       repo = github.context.repo;
@@ -9721,14 +9721,19 @@ function deliver(url, secret, payload) {
       }
 
       core.info("Delivering " + JSON.stringify(requestBody) + " to " + url);
-      response = axios_1.default({
+      requestConfig = {
         url: url,
         method: 'POST',
-        headers: {
-          'X-GitHub-Secret': "" + secret
-        },
         data: requestBody
-      });
+      };
+
+      if (secret) {
+        requestConfig['headers'] = {
+          'X-GitHub-Secret': "" + secret
+        };
+      }
+
+      response = axios_1.default(requestConfig);
       return [2
       /*return*/
       , response];
