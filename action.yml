@@ -11,7 +11,7 @@ inputs:
   secret:
     description: 'The Web Hook Secret sent via the X-GitHub-Secret HTTP Header' 
     required: true
-  paylod:
+  payload:
     description: 'Additional payload data' 
     required: false
     default: '{}'

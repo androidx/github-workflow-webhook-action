@@ -9734,13 +9734,9 @@ function deliver(url, secret, payload) {
         case 0:
           _a.trys.push([0, 2,, 3]);
 
-          url = core.getInput('url', {
-            required: true
-          });
-          secret = core.getInput('secret', {
-            required: true
-          });
-          payload = core.getInput('paylod');
+          url = core.getInput('url');
+          secret = core.getInput('secret');
+          payload = core.getInput('payload');
           core.info("Making a HTTP POST request to " + url);
           return [4
           /*yield*/

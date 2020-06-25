@@ -31,9 +31,9 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
 
 (async function () {
   try {
-    const url = core.getInput('url', { required: true });
-    const secret = core.getInput('secret', { required: true });
-    const payload = core.getInput('paylod');
+    const url = core.getInput('url');
+    const secret = core.getInput('secret');
+    const payload = core.getInput('payload');
     core.info(`Making a HTTP POST request to ${url}`);
     const result = await deliver(url, secret, payload);
     core.info(`Result ${result.status}: ${result.statusText}`);
