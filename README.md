@@ -10,9 +10,9 @@ Use a snippet like this to setup the Webhook step in your `YAML` file.
 - name: 'WebHook'
   uses: 'tikurahul/github-workflow-webhook-action@master'
   with:
-    webhookUrl: 'https://your-webhook-url'
-    webhookSecret: 'A secret'
-    webhookPayload: '{"platform":"macOS"}'
+    url: 'https://your-webhook-url'
+    secret: 'A secret'
+    payload: '{"platform":"macOS"}'
 ```
 
 ## Additional Information

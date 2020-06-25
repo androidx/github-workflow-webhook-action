@@ -5,13 +5,13 @@ branding:
   icon: 'share'  
   color: 'green'
 inputs:
-  webhookUrl:
+  url:
     description: 'The Web Hook URL where a HTTP POST will be delivered'
     required: true
-  webhookSecret:
+  secret:
     description: 'The Web Hook Secret sent via the X-GitHub-Secret HTTP Header' 
     required: true
-  webhookPayload:
+  paylod:
     description: 'Additional payload data' 
     required: false
     default: '{}'

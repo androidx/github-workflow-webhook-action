@@ -9711,7 +9711,7 @@ function deliver(url, secret, payload) {
         'ref': ref,
         'sha': sha
       }, additionalPayload);
-      core.debug("Delivering " + JSON.stringify(requestBody) + " to " + url);
+      core.info("Delivering " + JSON.stringify(requestBody) + " to " + url);
       response = axios_1.default({
         method: 'POST',
         headers: {
@@ -9734,21 +9734,21 @@ function deliver(url, secret, payload) {
         case 0:
           _a.trys.push([0, 2,, 3]);
 
-          url = core.getInput('webhookUrl', {
+          url = core.getInput('url', {
             required: true
           });
-          secret = core.getInput('webhookSecret', {
+          secret = core.getInput('secret', {
             required: true
           });
-          payload = core.getInput('webhookPayload');
-          core.debug("Making a HTTP POST request to " + url);
+          payload = core.getInput('paylod');
+          core.info("Making a HTTP POST request to " + url);
           return [4
           /*yield*/
           , deliver(url, secret, payload)];
 
         case 1:
           result = _a.sent();
-          core.debug("Result " + result.status + ": " + result.statusText);
+          core.info("Result " + result.status + ": " + result.statusText);
           core.setOutput('status', result.status);
           core.setOutput('statusText', result.statusText);
           return [3
