@@ -9734,8 +9734,12 @@ function deliver(url, secret, payload) {
         case 0:
           _a.trys.push([0, 2,, 3]);
 
-          url = core.getInput('webhook-url');
-          secret = core.getInput('webhook-secret');
+          url = core.getInput('webhook-url', {
+            required: true
+          });
+          secret = core.getInput('webhook-secret', {
+            required: true
+          });
           payload = core.getInput('webhook-payload');
           return [4
           /*yield*/

@@ -4,7 +4,6 @@ author: 'Rahul Ravikumar'
 branding:
   icon: 'share'  
   color: 'green'
-
 inputs:
   webhook-url:
     description: 'The Web Hook URL where a HTTP POST will be delivered'

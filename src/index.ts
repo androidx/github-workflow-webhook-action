@@ -16,7 +16,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
     'sha': sha,
     ...additionalPayload
   };
-  
+
   core.debug(`Delivering ${JSON.stringify(requestBody)} to ${url}`);
   const response = axios({
     method: 'POST',
@@ -31,8 +31,8 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
 
 (async function () {
   try {
-    const url = core.getInput('webhook-url');
-    const secret = core.getInput('webhook-secret');
+    const url = core.getInput('webhook-url', { required: true });
+    const secret = core.getInput('webhook-secret', { required: true });
     const payload = core.getInput('webhook-payload');
     const result = await deliver(url, secret, payload);
     core.debug(`Making a HTTP POST request to ${url}`);
