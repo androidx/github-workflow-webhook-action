@@ -9697,13 +9697,17 @@ var github = require("@actions/github");
 var axios_1 = __importDefault(require("axios"));
 
 function deliver(url, secret, payload) {
+  var _a;
+
   return __awaiter(this, void 0, Promise, function () {
-    var workflow, repo, ref, sha, additionalPayload, requestBody, response;
-    return __generator(this, function (_a) {
+    var workflow, repo, ref, sha, workFlowPaylod, pullRequestUrl, additionalPayload, requestBody, response;
+    return __generator(this, function (_b) {
       workflow = github.context.workflow;
       repo = github.context.repo;
       ref = github.context.ref;
       sha = github.context.sha;
+      workFlowPaylod = github.context.payload;
+      pullRequestUrl = (_a = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _a === void 0 ? void 0 : _a.html_url;
       additionalPayload = JSON.parse(payload);
       requestBody = __assign({
         'workflow': workflow,
@@ -9711,6 +9715,11 @@ function deliver(url, secret, payload) {
         'ref': ref,
         'sha': sha
       }, additionalPayload);
+
+      if (pullRequestUrl) {
+        requestBody['pullRequestUrl'] = pullRequestUrl;
+      }
+
       core.info("Delivering " + JSON.stringify(requestBody) + " to " + url);
       response = axios_1.default({
         url: url,

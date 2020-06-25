@@ -1,6 +1,6 @@
 # GitHub Workflow Webhook Action
 
-A Github Workflow Webhook that makes a `HTTP POST` request to the given `webhook-url` with a preconfigured `webhook-secret`.
+A Github Workflow Webhook that makes a `HTTP POST` request to the given `url` with a preconfigured `secret`.
 
 ## Usage
 
@@ -23,6 +23,7 @@ Your webhook endpoint will get a payload which looks something like:
   "repo":{"owner":"owner","repo":"repoName"},
   "ref":"refs/heads/branch",
   "sha":"sha",
+  "pullRequestUrl": "https://github.com/owner/repo/pulls/number",
   "platform":"macOS"
 }
 ```

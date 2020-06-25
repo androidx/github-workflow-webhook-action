@@ -7,6 +7,8 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   const repo = github.context.repo;
   const ref = github.context.ref;
   const sha = github.context.sha;
+  const workFlowPaylod = github.context.payload;
+  const pullRequestUrl = workFlowPaylod?.pull_request?.html_url;
 
   const additionalPayload = JSON.parse(payload);
   const requestBody = {
@@ -16,6 +18,10 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
     'sha': sha,
     ...additionalPayload
   };
+
+  if (pullRequestUrl) {
+    requestBody['pullRequestUrl'] = pullRequestUrl;
+  }
 
   core.info(`Delivering ${JSON.stringify(requestBody)} to ${url}`);
   const response = axios({
