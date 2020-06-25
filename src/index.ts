@@ -17,6 +17,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Re
   };
 
   console.log(`Delivering ${requestBody} to ${url}`);
+  core.debug(`Delivering ${JSON.stringify(requestBody)} to ${url}`);
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -37,9 +38,11 @@ async function deliver(url: string, secret: string, payload: string): Promise<Re
     const payload = core.getInput('webhook-payload');
     const result = await deliver(url, secret, payload);
     console.log(`Result ${result.status}: ${result.statusText}`);
+    core.debug(`Result ${result.status}: ${result.statusText}`);
     core.setOutput('status', result.status);
     core.setOutput('statusText', result.statusText);
   } catch (error) {
     console.log('Unable to deliver Web Hook', error);
+    core.setFailed(`Unable to deliver Web Hook ${error}`);
   }
 })();

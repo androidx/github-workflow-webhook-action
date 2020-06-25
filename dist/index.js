@@ -6349,7 +6349,7 @@ function getOctokit(token, options) {
 }
 exports.getOctokit = getOctokit;
 
-},{"./context":"Od13","./utils":"iB4x"}],"Focm":[function(require,module,exports) {
+},{"./context":"Od13","./utils":"iB4x"}],"QCba":[function(require,module,exports) {
 "use strict";
 
 var __assign = this && this.__assign || function () {
@@ -6516,7 +6516,7 @@ var core = require("@actions/core");
 var github = require("@actions/github");
 
 function deliver(url, secret, payload) {
-  return __awaiter(this, void 0, void 0, function () {
+  return __awaiter(this, void 0, Promise, function () {
     var workflow, repo, ref, sha, additionalPayload, requestBody, response;
     return __generator(this, function (_a) {
       switch (_a.label) {
@@ -6533,6 +6533,7 @@ function deliver(url, secret, payload) {
             'sha': sha
           }, additionalPayload);
           console.log("Delivering " + requestBody + " to " + url);
+          core.debug("Delivering " + JSON.stringify(requestBody) + " to " + url);
           return [4
           /*yield*/
           , fetch(url, {
@@ -6573,6 +6574,7 @@ function deliver(url, secret, payload) {
         case 1:
           result = _a.sent();
           console.log("Result " + result.status + ": " + result.statusText);
+          core.debug("Result " + result.status + ": " + result.statusText);
           core.setOutput('status', result.status);
           core.setOutput('statusText', result.statusText);
           return [3
@@ -6582,6 +6584,7 @@ function deliver(url, secret, payload) {
         case 2:
           error_1 = _a.sent();
           console.log('Unable to deliver Web Hook', error_1);
+          core.setFailed("Unable to deliver Web Hook " + error_1);
           return [3
           /*break*/
           , 3];
@@ -6594,5 +6597,5 @@ function deliver(url, secret, payload) {
     });
   });
 })();
-},{"@actions/core":"RNev","@actions/github":"Jpqw"}]},{},["Focm"], null)
+},{"@actions/core":"RNev","@actions/github":"Jpqw"}]},{},["QCba"], null)
 //# sourceMappingURL=/index.js.map
