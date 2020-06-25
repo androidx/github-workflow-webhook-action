@@ -16,7 +16,7 @@
     "format": "node_modules/.bin/clang-format -i -style=file --glob=src/**.ts",
     "clean": "rm -rf built",
     "watch": "node_modules/.bin/tsc --watch &",
-    "build": "node_modules/.bin/tsc && node_modules/.bin/parcel build src/index.ts --target node --out-file dist/index.js --no-minify"
+    "build": "node_modules/.bin/tsc && node_modules/.bin/parcel build built/index.js --target node --bundle-node-modules --out-file dist/index.js --no-minify"
   },
   "devDependencies": {
     "clang-format": "^1.4.0",
