@@ -9713,6 +9713,7 @@ function deliver(url, secret, payload) {
       }, additionalPayload);
       core.info("Delivering " + JSON.stringify(requestBody) + " to " + url);
       response = axios_1.default({
+        url: url,
         method: 'POST',
         headers: {
           'X-GitHub-Secret': "" + secret

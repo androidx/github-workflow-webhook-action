@@ -19,6 +19,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
 
   core.info(`Delivering ${JSON.stringify(requestBody)} to ${url}`);
   const response = axios({
+    url: url,
     method: 'POST',
     headers: {
       'X-GitHub-Secret': `${secret}`
