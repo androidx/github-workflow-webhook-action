@@ -1,7 +1,9 @@
 import core = require('@actions/core');
 import github = require('@actions/github');
+import { gretch } from 'gretchen';
 
-async function deliver(url: string, secret: string, payload: string): Promise<Response> {
+
+async function deliver(url: string, secret: string, payload: string) {
   const workflow = github.context.workflow;
   const repo = github.context.repo;
   const ref = github.context.ref;
@@ -18,7 +20,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Re
 
   console.log(`Delivering ${requestBody} to ${url}`);
   core.debug(`Delivering ${JSON.stringify(requestBody)} to ${url}`);
-  const response = await fetch(url, {
+  const response = await gretch(url, {
     method: 'POST',
     headers: {
       'X-GitHub-Secret': `${secret}`
@@ -26,7 +28,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Re
     cache: 'no-cache',
     redirect: 'follow',
     body: JSON.stringify(requestBody)
-  });
+  }).flush();
 
   return response;
 }
@@ -37,10 +39,10 @@ async function deliver(url: string, secret: string, payload: string): Promise<Re
     const secret = core.getInput('webhook-secret');
     const payload = core.getInput('webhook-payload');
     const result = await deliver(url, secret, payload);
-    console.log(`Result ${result.status}: ${result.statusText}`);
-    core.debug(`Result ${result.status}: ${result.statusText}`);
+    console.log(`Result ${result.status}: ${result.response.status}`);
+    core.debug(`Result ${result.status}: ${result.response.statusText}`);
     core.setOutput('status', result.status);
-    core.setOutput('statusText', result.statusText);
+    core.setOutput('statusText', result.response.statusText);
   } catch (error) {
     console.log('Unable to deliver Web Hook', error);
     core.setFailed(`Unable to deliver Web Hook ${error}`);

@@ -6349,7 +6349,219 @@ function getOctokit(token, options) {
 }
 exports.getOctokit = getOctokit;
 
-},{"./context":"Od13","./utils":"iB4x"}],"QCba":[function(require,module,exports) {
+},{"./context":"Od13","./utils":"iB4x"}],"wHjx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.gretch = a;
+exports.create = u;
+"undefined" != typeof Symbol && (Symbol.iterator || (Symbol.iterator = Symbol("Symbol.iterator"))), "undefined" != typeof Symbol && (Symbol.asyncIterator || (Symbol.asyncIterator = Symbol("Symbol.asyncIterator")));
+
+var t = function (t, e) {
+  void 0 === e && (e = {});
+
+  try {
+    return Promise.resolve(fetch(t, Object.assign({}, {
+      credentials: "same-origin"
+    }, e)));
+  } catch (t) {
+    return Promise.reject(t);
+  }
+},
+    e = function (t) {
+  function e(e) {
+    t.call(this, e.statusText), this.name = "HTTPError", this.status = e.status, this.url = e.url;
+  }
+
+  return t && (e.__proto__ = t), (e.prototype = Object.create(t && t.prototype)).constructor = e, e;
+}(Error),
+    r = function (t) {
+  function e() {
+    t.call(this, "Request timed out"), this.name = "HTTPTimeout";
+  }
+
+  return t && (e.__proto__ = t), (e.prototype = Object.create(t && t.prototype)).constructor = e, e;
+}(Error),
+    n = function (t, e, i) {
+  try {
+    return Promise.resolve(t()).then(function (s) {
+      var a = !1,
+          u = s.status,
+          c = s.headers.get("Retry-After"),
+          f = Object.assign({}, o, i),
+          l = f.attempts,
+          h = f.codes,
+          m = f.methods,
+          d = f.delay,
+          v = h.indexOf(u) > -1 || u >= 500 && u < 600,
+          y = m.indexOf(e) > -1,
+          p = function () {
+        if (v && y) return 0 === l || s instanceof r ? (a = !0, s) : Promise.resolve(new Promise(function (t) {
+          setTimeout(t, c ? 1e3 * parseInt(c, 10) : d);
+        })).then(function () {
+          return a = !0, n(t, e, {
+            attempts: l - 1,
+            codes: h,
+            methods: m,
+            delay: d * d
+          });
+        });
+      }();
+
+      return p && p.then ? p.then(function (t) {
+        return a ? t : s;
+      }) : a ? p : s;
+    });
+  } catch (t) {
+    return Promise.reject(t);
+  }
+},
+    o = {
+  attempts: 2,
+  codes: [408, 413, 429],
+  methods: ["GET"],
+  delay: 6
+},
+    i = function (t, e, n) {
+  void 0 === e && (e = 1e4);
+
+  try {
+    return Promise.resolve(new Promise(function (o, i) {
+      var s = setTimeout(function () {
+        n && n.abort(), i(new r());
+      }, e);
+      t.then(o).catch(i).then(function () {
+        return clearTimeout(s);
+      });
+    }));
+  } catch (t) {
+    return Promise.reject(t);
+  }
+},
+    s = /https?:\/\//;
+
+function a(r, a) {
+  void 0 === a && (a = {});
+  var u = a.method;
+  void 0 === u && (u = "GET");
+  var c = a.baseURL,
+      f = a.json,
+      l = a.retry;
+  void 0 === l && (l = o);
+  var h = a.timeout;
+  void 0 === h && (h = 1e4);
+  var m = a.hooks;
+  void 0 === m && (m = {});
+
+  var d = function (t, e) {
+    var r = {};
+
+    for (var n in t) Object.prototype.hasOwnProperty.call(t, n) && -1 === e.indexOf(n) && (r[n] = t[n]);
+
+    return r;
+  }(a, ["method", "baseURL", "json", "retry", "timeout", "hooks"]),
+      v = Object.assign({}, {
+    method: u,
+    headers: {}
+  }, d),
+      y = "undefined" != typeof AbortController ? new AbortController() : null;
+
+  y && (v.signal = y.signal), f && (v.headers = Object.assign({}, {
+    "Content-Type": "application/json"
+  }, v.headers), v.body = JSON.stringify(f));
+  var p = void 0 !== c ? function (t, e) {
+    var r = e.baseURL;
+    if (s.test(t) || !r) return t;
+    var n = (r.match(s) || [""])[0];
+    return n + ((r.replace(n, "") + "/").replace(/\/\//, "/") + t).replace(/\/\//, "/");
+  }(r, {
+    baseURL: c
+  }) : r,
+      b = new Request(p, v);
+  m.before && m.before(b, a);
+
+  var P = function () {
+    return h ? i(t(b), h, y) : t(b);
+  },
+      j = !1 === l ? P() : n(P, u, l),
+      O = {
+    flush: function () {
+      try {
+        return Promise.resolve(j).then(function (t) {
+          var e = t.clone();
+          return {
+            url: p,
+            status: e.status,
+            response: e
+          };
+        });
+      } catch (t) {
+        return Promise.reject(t);
+      }
+    }
+  };
+
+  return ["json", "text", "formData", "arrayBuffer", "blob"].forEach(function (t) {
+    O[t] = function () {
+      try {
+        function r() {
+          var t = {
+            url: p,
+            status: u,
+            data: s,
+            error: i,
+            response: n
+          };
+          return m.after && m.after(t, a), t;
+        }
+
+        var n,
+            o,
+            i,
+            s,
+            u = 500,
+            c = function (r, a) {
+          try {
+            var c = Promise.resolve(j).then(function (r) {
+              function a() {
+                n.ok ? s = o : i = o || new e(n);
+              }
+
+              n = r.clone(), u = n.status || 500;
+
+              var c = function () {
+                if (204 !== u) return Promise.resolve(n.clone()[t]()).then(function (t) {
+                  o = t;
+                });
+              }();
+
+              return c && c.then ? c.then(a) : a();
+            });
+          } catch (t) {
+            return a(t);
+          }
+
+          return c && c.then ? c.then(void 0, a) : c;
+        }(0, function (t) {
+          i = t || "You tried to make fetch happen, but it didn't.";
+        });
+
+        return Promise.resolve(c && c.then ? c.then(r) : r());
+      } catch (t) {
+        return Promise.reject(t);
+      }
+    };
+  }), O;
+}
+
+function u(t) {
+  return void 0 === t && (t = {}), function (e, r) {
+    return void 0 === r && (r = {}), a(e, Object.assign({}, t, r));
+  };
+}
+},{}],"QCba":[function(require,module,exports) {
 "use strict";
 
 var __assign = this && this.__assign || function () {
@@ -6515,8 +6727,10 @@ var core = require("@actions/core");
 
 var github = require("@actions/github");
 
+var gretchen_1 = require("gretchen");
+
 function deliver(url, secret, payload) {
-  return __awaiter(this, void 0, Promise, function () {
+  return __awaiter(this, void 0, void 0, function () {
     var workflow, repo, ref, sha, additionalPayload, requestBody, response;
     return __generator(this, function (_a) {
       switch (_a.label) {
@@ -6536,7 +6750,7 @@ function deliver(url, secret, payload) {
           core.debug("Delivering " + JSON.stringify(requestBody) + " to " + url);
           return [4
           /*yield*/
-          , fetch(url, {
+          , gretchen_1.gretch(url, {
             method: 'POST',
             headers: {
               'X-GitHub-Secret': "" + secret
@@ -6544,7 +6758,7 @@ function deliver(url, secret, payload) {
             cache: 'no-cache',
             redirect: 'follow',
             body: JSON.stringify(requestBody)
-          })];
+          }).flush()];
 
         case 1:
           response = _a.sent();
@@ -6573,10 +6787,10 @@ function deliver(url, secret, payload) {
 
         case 1:
           result = _a.sent();
-          console.log("Result " + result.status + ": " + result.statusText);
-          core.debug("Result " + result.status + ": " + result.statusText);
+          console.log("Result " + result.status + ": " + result.response.status);
+          core.debug("Result " + result.status + ": " + result.response.statusText);
           core.setOutput('status', result.status);
-          core.setOutput('statusText', result.statusText);
+          core.setOutput('statusText', result.response.statusText);
           return [3
           /*break*/
           , 3];
@@ -6597,5 +6811,5 @@ function deliver(url, secret, payload) {
     });
   });
 })();
-},{"@actions/core":"RNev","@actions/github":"Jpqw"}]},{},["QCba"], null)
+},{"@actions/core":"RNev","@actions/github":"Jpqw","gretchen":"wHjx"}]},{},["QCba"], null)
 //# sourceMappingURL=/index.js.map

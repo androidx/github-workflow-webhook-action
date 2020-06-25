@@ -2768,6 +2768,11 @@ grapheme-breaker@^0.3.2:
     brfs "^1.2.0"
     unicode-trie "^0.3.1"
 
+gretchen@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/gretchen/-/gretchen-1.2.0.tgz#1ef260d64db0cbe0ffcc2b7dc3b5efa57cd79c46"
+  integrity sha512-dO7ADQrU4QCfRO/j+ulU4IxQ8O4XtBR/onlG/i354E+dg/Aql5SSjHS7YAEonXxVoEmH63NGNPWDLwyYg/Qvww==
+
 har-schema@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/har-schema/-/har-schema-2.0.0.tgz#a94c2224ebcac04782a0d9035521f24735b7ec92"
