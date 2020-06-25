@@ -15,6 +15,18 @@ Use a snippet like this to setup the Webhook step in your `YAML` file.
     payload: '{"platform":"macOS"}'
 ```
 
+Your webhook endpoint will get a payload which looks something like:
+
+```json
+{
+  "workflow":"workflowName",
+  "repo":{"owner":"owner","repo":"repoName"},
+  "ref":"refs/heads/branch",
+  "sha":"sha",
+  "platform":"macOS"
+}
+```
+
 ## Additional Information
 
 The secret is delivered using an HTTP Header `X-GitHub-Secret`.
