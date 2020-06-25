@@ -9734,20 +9734,20 @@ function deliver(url, secret, payload) {
         case 0:
           _a.trys.push([0, 2,, 3]);
 
-          url = core.getInput('webhook-url', {
+          url = core.getInput('webhookUrl', {
             required: true
           });
-          secret = core.getInput('webhook-secret', {
+          secret = core.getInput('webhookSecret', {
             required: true
           });
-          payload = core.getInput('webhook-payload');
+          payload = core.getInput('webhookPayload');
+          core.debug("Making a HTTP POST request to " + url);
           return [4
           /*yield*/
           , deliver(url, secret, payload)];
 
         case 1:
           result = _a.sent();
-          core.debug("Making a HTTP POST request to " + url);
           core.debug("Result " + result.status + ": " + result.statusText);
           core.setOutput('status', result.status);
           core.setOutput('statusText', result.statusText);

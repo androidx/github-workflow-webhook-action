@@ -31,11 +31,11 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
 
 (async function () {
   try {
-    const url = core.getInput('webhook-url', { required: true });
-    const secret = core.getInput('webhook-secret', { required: true });
-    const payload = core.getInput('webhook-payload');
-    const result = await deliver(url, secret, payload);
+    const url = core.getInput('webhookUrl', { required: true });
+    const secret = core.getInput('webhookSecret', { required: true });
+    const payload = core.getInput('webhookPayload');
     core.debug(`Making a HTTP POST request to ${url}`);
+    const result = await deliver(url, secret, payload);
     core.debug(`Result ${result.status}: ${result.statusText}`);
     core.setOutput('status', result.status);
     core.setOutput('statusText', result.statusText);

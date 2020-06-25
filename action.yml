@@ -5,15 +5,16 @@ branding:
   icon: 'share'  
   color: 'green'
 inputs:
-  webhook-url:
+  webhookUrl:
     description: 'The Web Hook URL where a HTTP POST will be delivered'
     required: true
-  webhook-secret:
+  webhookSecret:
     description: 'The Web Hook Secret sent via the X-GitHub-Secret HTTP Header' 
     required: true
-  webhook-payload:
+  webhookPayload:
     description: 'Additional payload data' 
     required: false
+    default: '{}'
 outputs:
   status:
     description: The result HTTP status code
