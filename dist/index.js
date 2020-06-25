@@ -9711,7 +9711,6 @@ function deliver(url, secret, payload) {
         'ref': ref,
         'sha': sha
       }, additionalPayload);
-      console.log("Delivering " + requestBody + " to " + url);
       core.debug("Delivering " + JSON.stringify(requestBody) + " to " + url);
       response = axios_1.default({
         method: 'POST',
@@ -9744,7 +9743,7 @@ function deliver(url, secret, payload) {
 
         case 1:
           result = _a.sent();
-          console.log("Result " + result.status + ": " + result.status);
+          core.debug("Making a HTTP POST request to " + url);
           core.debug("Result " + result.status + ": " + result.statusText);
           core.setOutput('status', result.status);
           core.setOutput('statusText', result.statusText);
@@ -9754,7 +9753,6 @@ function deliver(url, secret, payload) {
 
         case 2:
           error_1 = _a.sent();
-          console.log('Unable to deliver Web Hook', error_1);
           core.setFailed("Unable to deliver Web Hook " + error_1);
           return [3
           /*break*/

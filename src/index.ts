@@ -16,8 +16,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
     'sha': sha,
     ...additionalPayload
   };
-
-  console.log(`Delivering ${requestBody} to ${url}`);
+  
   core.debug(`Delivering ${JSON.stringify(requestBody)} to ${url}`);
   const response = axios({
     method: 'POST',
@@ -36,12 +35,11 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
     const secret = core.getInput('webhook-secret');
     const payload = core.getInput('webhook-payload');
     const result = await deliver(url, secret, payload);
-    console.log(`Result ${result.status}: ${result.status}`);
+    core.debug(`Making a HTTP POST request to ${url}`);
     core.debug(`Result ${result.status}: ${result.statusText}`);
     core.setOutput('status', result.status);
     core.setOutput('statusText', result.statusText);
   } catch (error) {
-    console.log('Unable to deliver Web Hook', error);
     core.setFailed(`Unable to deliver Web Hook ${error}`);
   }
 })();
