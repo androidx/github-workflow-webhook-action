@@ -1,5 +1,10 @@
 name: 'GitHub Work Flow Hooks'
 description: 'A Web Hook for GitHub Workflows'
+author: 'Rahul Ravikumar'
+branding:
+  icon: 'share'  
+  color: 'green'
+
 inputs:
   webhook-url:
     description: 'The Web Hook URL where a HTTP POST will be delivered'
@@ -17,4 +22,4 @@ outputs:
     description: The result HTTP status text
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'built/index.js'
