@@ -22,4 +22,4 @@ outputs:
     description: The result HTTP status text
 runs:
   using: 'node12'
-  main: 'built/index.js'
+  main: 'dist/index.js'

@@ -15,16 +15,18 @@
     "compile": "node_modules/.bin/tsc",
     "format": "node_modules/.bin/clang-format -i -style=file --glob=src/**.ts",
     "clean": "rm -rf built",
-    "watch": "node_modules/.bin/tsc --watch &"
+    "watch": "node_modules/.bin/tsc --watch &",
+    "build": "node_modules/.bin/tsc && node_modules/.bin/parcel build src/index.ts --target node --out-file dist/index.js --no-minify"
   },
   "devDependencies": {
+    "clang-format": "^1.4.0",
+    "parcel-bundler": "^1.12.4",
     "typescript": "^3.9.5",
-    "watchify": "^3.11.1",
-    "clang-format": "^1.4.0"
+    "watchify": "^3.11.1"
   },
   "dependencies": {
-    "@types/node": "^14.0.14",
     "@actions/core": "^1.2.4",
-    "@actions/github": "^3.0.0"
+    "@actions/github": "^3.0.0",
+    "@types/node": "^14.0.14"
   }
 }

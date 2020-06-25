@@ -13,6 +13,4 @@ bower_components/
 tmp/
 typings/
 *.google
-
-built/app/
-built/node_app/
+.cache
