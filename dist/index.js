@@ -9706,7 +9706,9 @@ function deliver(url, secret, payload) {
       repo = github.context.repo;
       ref = github.context.ref;
       sha = github.context.sha;
-      workFlowPaylod = github.context.payload;
+      workFlowPaylod = github.context.payload; // Log the actual workflow payload for debugging
+
+      core.debug("Workflow payload " + JSON.stringify(workFlowPaylod));
       pullRequestUrl = (_a = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _a === void 0 ? void 0 : _a.html_url;
       additionalPayload = JSON.parse(payload);
       requestBody = __assign({

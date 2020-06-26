@@ -8,8 +8,11 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   const ref = github.context.ref;
   const sha = github.context.sha;
   const workFlowPaylod = github.context.payload;
-  const pullRequestUrl = workFlowPaylod?.pull_request?.html_url;
 
+  // Log the actual workflow payload for debugging
+  core.debug(`Workflow payload ${JSON.stringify(workFlowPaylod)}`);
+
+  const pullRequestUrl = workFlowPaylod?.pull_request?.html_url;
   const additionalPayload = JSON.parse(payload);
   const requestBody = {
     'workflow': workflow,
