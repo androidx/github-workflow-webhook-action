@@ -9697,11 +9697,11 @@ var github = require("@actions/github");
 var axios_1 = __importDefault(require("axios"));
 
 function deliver(url, secret, payload) {
-  var _a;
+  var _a, _b, _c, _d;
 
   return __awaiter(this, void 0, Promise, function () {
-    var workflow, repo, ref, sha, workFlowPaylod, pullRequestUrl, additionalPayload, requestBody, requestConfig, response;
-    return __generator(this, function (_b) {
+    var workflow, repo, ref, sha, workFlowPaylod, headSha, pullRequestUrl, additionalPayload, requestBody, requestConfig, response;
+    return __generator(this, function (_e) {
       workflow = github.context.workflow;
       repo = github.context.repo;
       ref = github.context.ref;
@@ -9709,13 +9709,14 @@ function deliver(url, secret, payload) {
       workFlowPaylod = github.context.payload; // Log the actual workflow payload for debugging
 
       core.info("Workflow payload " + JSON.stringify(workFlowPaylod));
-      pullRequestUrl = (_a = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _a === void 0 ? void 0 : _a.html_url;
+      headSha = (_c = (_b = (_a = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.sha) !== null && _c !== void 0 ? _c : sha;
+      pullRequestUrl = (_d = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _d === void 0 ? void 0 : _d.html_url;
       additionalPayload = JSON.parse(payload);
       requestBody = __assign({
         'workflow': workflow,
         'repo': repo,
         'ref': ref,
-        'sha': sha
+        'sha': headSha
       }, additionalPayload);
 
       if (pullRequestUrl) {

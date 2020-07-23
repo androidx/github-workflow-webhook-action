@@ -12,13 +12,15 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   // Log the actual workflow payload for debugging
   core.info(`Workflow payload ${JSON.stringify(workFlowPaylod)}`);
 
+  const headSha = workFlowPaylod?.pull_request?.head?.sha ?? sha;
   const pullRequestUrl = workFlowPaylod?.pull_request?.html_url;
+
   const additionalPayload = JSON.parse(payload);
   const requestBody = {
     'workflow': workflow,
     'repo': repo,
     'ref': ref,
-    'sha': sha,
+    'sha': headSha,
     ...additionalPayload
   };
 
