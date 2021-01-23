@@ -14,6 +14,9 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
 
   const headSha = workFlowPaylod?.pull_request?.head?.sha ?? sha;
   const pullRequestUrl = workFlowPaylod?.pull_request?.html_url;
+  const sender = workFlowPaylod?.sender?.login;
+  // Notify build failures if its copybara-bot merging the changes.
+  const notifyOnFailure = sender === 'copybara-service[bot]';
 
   const additionalPayload = JSON.parse(payload);
   const requestBody = {
@@ -21,6 +24,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
     'repo': repo,
     'ref': ref,
     'sha': headSha,
+    'notifyOnFailure': notifyOnFailure,
     ...additionalPayload
   };
 

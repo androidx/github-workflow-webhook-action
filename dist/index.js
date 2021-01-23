@@ -117,7 +117,27 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"opPA":[function(require,module,exports) {
+})({"VRa1":[function(require,module,exports) {
+"use strict";
+// We use any as a valid input type
+/* eslint-disable @typescript-eslint/no-explicit-any */
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Sanitizes an input into a string so it can be passed into issueCommand safely
+ * @param input input to sanitize into a string
+ */
+function toCommandValue(input) {
+    if (input === null || input === undefined) {
+        return '';
+    }
+    else if (typeof input === 'string' || input instanceof String) {
+        return input;
+    }
+    return JSON.stringify(input);
+}
+exports.toCommandValue = toCommandValue;
+
+},{}],"opPA":[function(require,module,exports) {
 "use strict";
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
@@ -128,6 +148,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const os = __importStar(require("os"));
+const utils_1 = require("./utils");
 /**
  * Commands
  *
@@ -181,28 +202,14 @@ class Command {
         return cmdStr;
     }
 }
-/**
- * Sanitizes an input into a string so it can be passed into issueCommand safely
- * @param input input to sanitize into a string
- */
-function toCommandValue(input) {
-    if (input === null || input === undefined) {
-        return '';
-    }
-    else if (typeof input === 'string' || input instanceof String) {
-        return input;
-    }
-    return JSON.stringify(input);
-}
-exports.toCommandValue = toCommandValue;
 function escapeData(s) {
-    return toCommandValue(s)
+    return utils_1.toCommandValue(s)
         .replace(/%/g, '%25')
         .replace(/\r/g, '%0D')
         .replace(/\n/g, '%0A');
 }
 function escapeProperty(s) {
-    return toCommandValue(s)
+    return utils_1.toCommandValue(s)
         .replace(/%/g, '%25')
         .replace(/\r/g, '%0D')
         .replace(/\n/g, '%0A')
@@ -210,7 +217,37 @@ function escapeProperty(s) {
         .replace(/,/g, '%2C');
 }
 
-},{}],"RNev":[function(require,module,exports) {
+},{"./utils":"VRa1"}],"aaaf":[function(require,module,exports) {
+"use strict";
+// For internal use, subject to change.
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+// We use any as a valid input type
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const fs = __importStar(require("fs"));
+const os = __importStar(require("os"));
+const utils_1 = require("./utils");
+function issueCommand(command, message) {
+    const filePath = process.env[`GITHUB_${command}`];
+    if (!filePath) {
+        throw new Error(`Unable to find environment variable for file command ${command}`);
+    }
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`Missing file at path: ${filePath}`);
+    }
+    fs.appendFileSync(filePath, `${utils_1.toCommandValue(message)}${os.EOL}`, {
+        encoding: 'utf8'
+    });
+}
+exports.issueCommand = issueCommand;
+
+},{"./utils":"VRa1"}],"RNev":[function(require,module,exports) {
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -230,6 +267,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const command_1 = require("./command");
+const file_command_1 = require("./file-command");
+const utils_1 = require("./utils");
 const os = __importStar(require("os"));
 const path = __importStar(require("path"));
 /**
@@ -256,9 +295,17 @@ var ExitCode;
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function exportVariable(name, val) {
-    const convertedVal = command_1.toCommandValue(val);
+    const convertedVal = utils_1.toCommandValue(val);
     process.env[name] = convertedVal;
-    command_1.issueCommand('set-env', { name }, convertedVal);
+    const filePath = process.env['GITHUB_ENV'] || '';
+    if (filePath) {
+        const delimiter = '_GitHubActionsFileCommandDelimeter_';
+        const commandValue = `${name}<<${delimiter}${os.EOL}${convertedVal}${os.EOL}${delimiter}`;
+        file_command_1.issueCommand('ENV', commandValue);
+    }
+    else {
+        command_1.issueCommand('set-env', { name }, convertedVal);
+    }
 }
 exports.exportVariable = exportVariable;
 /**
@@ -274,7 +321,13 @@ exports.setSecret = setSecret;
  * @param inputPath
  */
 function addPath(inputPath) {
-    command_1.issueCommand('add-path', {}, inputPath);
+    const filePath = process.env['GITHUB_PATH'] || '';
+    if (filePath) {
+        file_command_1.issueCommand('PATH', inputPath);
+    }
+    else {
+        command_1.issueCommand('add-path', {}, inputPath);
+    }
     process.env['PATH'] = `${inputPath}${path.delimiter}${process.env['PATH']}`;
 }
 exports.addPath = addPath;
@@ -433,7 +486,7 @@ function getState(name) {
 }
 exports.getState = getState;
 
-},{"./command":"opPA"}],"Od13":[function(require,module,exports) {
+},{"./command":"opPA","./file-command":"aaaf","./utils":"VRa1"}],"Od13":[function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Context = void 0;
@@ -9697,11 +9750,11 @@ var github = require("@actions/github");
 var axios_1 = __importDefault(require("axios"));
 
 function deliver(url, secret, payload) {
-  var _a, _b, _c, _d;
+  var _a, _b, _c, _d, _e;
 
   return __awaiter(this, void 0, Promise, function () {
-    var workflow, repo, ref, sha, workFlowPaylod, headSha, pullRequestUrl, additionalPayload, requestBody, requestConfig, response;
-    return __generator(this, function (_e) {
+    var workflow, repo, ref, sha, workFlowPaylod, headSha, pullRequestUrl, sender, notifyOnFailure, additionalPayload, requestBody, requestConfig, response;
+    return __generator(this, function (_f) {
       workflow = github.context.workflow;
       repo = github.context.repo;
       ref = github.context.ref;
@@ -9711,12 +9764,15 @@ function deliver(url, secret, payload) {
       core.info("Workflow payload " + JSON.stringify(workFlowPaylod));
       headSha = (_c = (_b = (_a = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.sha) !== null && _c !== void 0 ? _c : sha;
       pullRequestUrl = (_d = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _d === void 0 ? void 0 : _d.html_url;
+      sender = (_e = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.sender) === null || _e === void 0 ? void 0 : _e.login;
+      notifyOnFailure = sender === 'copybara-service[bot]';
       additionalPayload = JSON.parse(payload);
       requestBody = __assign({
         'workflow': workflow,
         'repo': repo,
         'ref': ref,
-        'sha': headSha
+        'sha': headSha,
+        'notifyOnFailure': notifyOnFailure
       }, additionalPayload);
 
       if (pullRequestUrl) {
