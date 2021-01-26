@@ -1,6 +1,10 @@
+import fs = require('fs');
+import util = require('util');
 import core = require('@actions/core');
 import github = require('@actions/github');
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
+
+const readFile = util.promisify(fs.readFile);
 
 async function deliver(url: string, secret: string, payload: string): Promise<AxiosPromise<{}>> {
   const workflow = github.context.workflow;
@@ -13,7 +17,24 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   core.info(`Workflow payload ${JSON.stringify(workFlowPaylod)}`);
 
   const headSha = workFlowPaylod?.pull_request?.head?.sha ?? sha;
-  const pullRequestUrl = workFlowPaylod?.pull_request?.html_url;
+  let pullRequestUrl = workFlowPaylod?.pull_request?.html_url;
+  if (!!pullRequestUrl) {
+    const eventRef = process.env.GITHUB_REF;
+    if (eventRef) {
+      console.info(`Reading event reference ${eventRef}`);
+      const eventMetadata = JSON.parse(await readFile(eventRef, 'utf-8'));
+      if (eventMetadata) {
+        console.info(`Event Metadata ${eventMetadata}`);
+        // This is a unfortunate hack.
+        // https://github.com/actions/checkout/issues/58
+        const pullRequestNumber = eventMetadata?.pull_request?.number;
+        if (pullRequestNumber) {
+          pullRequestUrl = `https://github.com/androidx/androidx/pull/${pullRequestNumber}`;
+        }
+      }
+    }
+  }
+
   const sender = workFlowPaylod?.sender?.login;
   // Notify build failures if its copybara-bot merging the changes.
   const notifyOnFailure = sender === 'copybara-service[bot]';

@@ -9743,59 +9743,97 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var fs = require("fs");
+
+var util = require("util");
+
 var core = require("@actions/core");
 
 var github = require("@actions/github");
 
 var axios_1 = __importDefault(require("axios"));
 
+var readFile = util.promisify(fs.readFile);
+
 function deliver(url, secret, payload) {
-  var _a, _b, _c, _d, _e;
+  var _a, _b, _c, _d, _e, _f;
 
   return __awaiter(this, void 0, Promise, function () {
-    var workflow, repo, ref, sha, workFlowPaylod, headSha, pullRequestUrl, sender, notifyOnFailure, additionalPayload, requestBody, requestConfig, response;
-    return __generator(this, function (_f) {
-      workflow = github.context.workflow;
-      repo = github.context.repo;
-      ref = github.context.ref;
-      sha = github.context.sha;
-      workFlowPaylod = github.context.payload; // Log the actual workflow payload for debugging
+    var workflow, repo, ref, sha, workFlowPaylod, headSha, pullRequestUrl, eventRef, eventMetadata, _g, _h, pullRequestNumber, sender, notifyOnFailure, additionalPayload, requestBody, requestConfig, response;
 
-      core.info("Workflow payload " + JSON.stringify(workFlowPaylod));
-      headSha = (_c = (_b = (_a = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.sha) !== null && _c !== void 0 ? _c : sha;
-      pullRequestUrl = (_d = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _d === void 0 ? void 0 : _d.html_url;
-      sender = (_e = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.sender) === null || _e === void 0 ? void 0 : _e.login;
-      notifyOnFailure = sender === 'copybara-service[bot]';
-      additionalPayload = JSON.parse(payload);
-      requestBody = __assign({
-        'workflow': workflow,
-        'repo': repo,
-        'ref': ref,
-        'sha': headSha,
-        'notifyOnFailure': notifyOnFailure
-      }, additionalPayload);
+    return __generator(this, function (_j) {
+      switch (_j.label) {
+        case 0:
+          workflow = github.context.workflow;
+          repo = github.context.repo;
+          ref = github.context.ref;
+          sha = github.context.sha;
+          workFlowPaylod = github.context.payload; // Log the actual workflow payload for debugging
 
-      if (pullRequestUrl) {
-        requestBody['pullRequestUrl'] = pullRequestUrl;
+          core.info("Workflow payload " + JSON.stringify(workFlowPaylod));
+          headSha = (_c = (_b = (_a = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.sha) !== null && _c !== void 0 ? _c : sha;
+          pullRequestUrl = (_d = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _d === void 0 ? void 0 : _d.html_url;
+          if (!!!pullRequestUrl) return [3
+          /*break*/
+          , 2];
+          eventRef = process.env.GITHUB_REF;
+          if (!eventRef) return [3
+          /*break*/
+          , 2];
+          console.info("Reading event reference " + eventRef);
+          _h = (_g = JSON).parse;
+          return [4
+          /*yield*/
+          , readFile(eventRef, 'utf-8')];
+
+        case 1:
+          eventMetadata = _h.apply(_g, [_j.sent()]);
+
+          if (eventMetadata) {
+            console.info("Event Metadata " + eventMetadata);
+            pullRequestNumber = (_e = eventMetadata === null || eventMetadata === void 0 ? void 0 : eventMetadata.pull_request) === null || _e === void 0 ? void 0 : _e.number;
+
+            if (pullRequestNumber) {
+              pullRequestUrl = "https://github.com/androidx/androidx/pull/" + pullRequestNumber;
+            }
+          }
+
+          _j.label = 2;
+
+        case 2:
+          sender = (_f = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.sender) === null || _f === void 0 ? void 0 : _f.login;
+          notifyOnFailure = sender === 'copybara-service[bot]';
+          additionalPayload = JSON.parse(payload);
+          requestBody = __assign({
+            'workflow': workflow,
+            'repo': repo,
+            'ref': ref,
+            'sha': headSha,
+            'notifyOnFailure': notifyOnFailure
+          }, additionalPayload);
+
+          if (pullRequestUrl) {
+            requestBody['pullRequestUrl'] = pullRequestUrl;
+          }
+
+          core.info("Delivering " + JSON.stringify(requestBody) + " to " + url);
+          requestConfig = {
+            url: url,
+            method: 'POST',
+            data: requestBody
+          };
+
+          if (secret) {
+            requestConfig['headers'] = {
+              'X-GitHub-Secret': "" + secret
+            };
+          }
+
+          response = axios_1.default(requestConfig);
+          return [2
+          /*return*/
+          , response];
       }
-
-      core.info("Delivering " + JSON.stringify(requestBody) + " to " + url);
-      requestConfig = {
-        url: url,
-        method: 'POST',
-        data: requestBody
-      };
-
-      if (secret) {
-        requestConfig['headers'] = {
-          'X-GitHub-Secret': "" + secret
-        };
-      }
-
-      response = axios_1.default(requestConfig);
-      return [2
-      /*return*/
-      , response];
     });
   });
 }
