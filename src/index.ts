@@ -6,7 +6,6 @@ import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 async function deliver(url: string, secret: string, payload: string): Promise<AxiosPromise<{}>> {
   const workflow = github.context.workflow;
   const repo = github.context.repo;
-  const owner = github.context.repo.owner;
   const ref = github.context.ref;
   const sha = github.context.sha;
   const workFlowPaylod = github.context.payload;
@@ -17,7 +16,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   core.info(`GitHub Context ${JSON.stringify(github.context)}`);
 
   if (GITHUB_RUN_ID) {
-    contextUrl = `https://github.com/${owner}/${repo}/runs/${GITHUB_RUN_ID}`;
+    contextUrl = `https://github.com/${repo.owner}/${repo.repo}/runs/${GITHUB_RUN_ID}`;
     core.info(`GitHub Context ${contextUrl}`);
   }
 

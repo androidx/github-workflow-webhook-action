@@ -9753,11 +9753,10 @@ function deliver(url, secret, payload) {
   var _a, _b, _c, _d;
 
   return __awaiter(this, void 0, Promise, function () {
-    var workflow, repo, owner, ref, sha, workFlowPaylod, GITHUB_RUN_ID, contextUrl, headSha, sender, notifyOnFailure, additionalPayload, requestBody, requestConfig, response;
+    var workflow, repo, ref, sha, workFlowPaylod, GITHUB_RUN_ID, contextUrl, headSha, sender, notifyOnFailure, additionalPayload, requestBody, requestConfig, response;
     return __generator(this, function (_e) {
       workflow = github.context.workflow;
       repo = github.context.repo;
-      owner = github.context.repo.owner;
       ref = github.context.ref;
       sha = github.context.sha;
       workFlowPaylod = github.context.payload;
@@ -9767,7 +9766,7 @@ function deliver(url, secret, payload) {
       core.info("GitHub Context " + JSON.stringify(github.context));
 
       if (GITHUB_RUN_ID) {
-        contextUrl = "https://github.com/" + owner + "/" + repo + "/runs/" + GITHUB_RUN_ID;
+        contextUrl = "https://github.com/" + repo.owner + "/" + repo.repo + "/runs/" + GITHUB_RUN_ID;
         core.info("GitHub Context " + contextUrl);
       }
 
