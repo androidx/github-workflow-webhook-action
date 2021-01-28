@@ -9766,7 +9766,7 @@ function deliver(url, secret, payload) {
       core.info("GitHub Context " + JSON.stringify(github.context));
 
       if (GITHUB_RUN_ID) {
-        contextUrl = "https://github.com/" + repo.owner + "/" + repo.repo + "/runs/" + GITHUB_RUN_ID;
+        contextUrl = "https://github.com/" + repo.owner + "/" + repo.repo + "/actions/runs/" + GITHUB_RUN_ID;
         core.info("GitHub Context " + contextUrl);
       }
 
