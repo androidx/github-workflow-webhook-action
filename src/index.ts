@@ -1,40 +1,27 @@
 import fs = require('fs');
-import util = require('util');
 import core = require('@actions/core');
 import github = require('@actions/github');
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 
-const readFile = util.promisify(fs.readFile);
-
 async function deliver(url: string, secret: string, payload: string): Promise<AxiosPromise<{}>> {
   const workflow = github.context.workflow;
   const repo = github.context.repo;
+  const owner = github.context.repo.owner;
   const ref = github.context.ref;
   const sha = github.context.sha;
   const workFlowPaylod = github.context.payload;
+  const { GITHUB_RUN_ID } = process.env;
+  let contextUrl: string | null = null;
 
-  // Log the actual workflow payload for debugging
-  core.info(`Workflow payload ${JSON.stringify(workFlowPaylod)}`);
+  // Log the actual github context for debugging
+  core.info(`GitHub Context ${JSON.stringify(github.context)}`);
 
-  const headSha = workFlowPaylod?.pull_request?.head?.sha ?? sha;
-  let pullRequestUrl = workFlowPaylod?.pull_request?.html_url;
-  if (!!pullRequestUrl) {
-    const eventRef = process.env.GITHUB_REF;
-    if (eventRef) {
-      console.info(`Reading event reference ${eventRef}`);
-      const eventMetadata = JSON.parse(await readFile(eventRef, 'utf-8'));
-      if (eventMetadata) {
-        console.info(`Event Metadata ${eventMetadata}`);
-        // This is a unfortunate hack.
-        // https://github.com/actions/checkout/issues/58
-        const pullRequestNumber = eventMetadata?.pull_request?.number;
-        if (pullRequestNumber) {
-          pullRequestUrl = `https://github.com/androidx/androidx/pull/${pullRequestNumber}`;
-        }
-      }
-    }
+  if (GITHUB_RUN_ID) {
+    contextUrl = `https://github.com/${owner}/${repo}/runs/${GITHUB_RUN_ID}`;
+    core.info(`GitHub Context ${contextUrl}`);
   }
 
+  const headSha = workFlowPaylod?.pull_request?.head?.sha ?? sha;
   const sender = workFlowPaylod?.sender?.login;
   // Notify build failures if its copybara-bot merging the changes.
   const notifyOnFailure = sender === 'copybara-service[bot]';
@@ -49,8 +36,8 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
     ...additionalPayload
   };
 
-  if (pullRequestUrl) {
-    requestBody['pullRequestUrl'] = pullRequestUrl;
+  if (contextUrl) {
+    requestBody['pullRequestUrl'] = contextUrl;
   }
 
   core.info(`Delivering ${JSON.stringify(requestBody)} to ${url}`);
