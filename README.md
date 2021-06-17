@@ -28,6 +28,14 @@ Your webhook endpoint will get a payload which looks something like:
 }
 ```
 
+## workflow_run targets
+When this action is invoked in a `workflow_run` trigger, `repo`, `ref` and `sha` will be from the context of the workflow run that triggered current workflow run.
+
 ## Additional Information
 
 The secret is delivered using an HTTP Header `X-GitHub-Secret`.
+
+## Building
+
+Setup: `npm install`
+Updating dist: `npm run-script --silent build`

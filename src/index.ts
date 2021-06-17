@@ -19,17 +19,24 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
     contextUrl = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${GITHUB_RUN_ID}`;
     core.info(`GitHub Context ${contextUrl}`);
   }
-
-  const headSha = workFlowPaylod?.pull_request?.head?.sha ?? sha;
+  // If this workflow is triggered by another workflow, use that run's parameters
+  const targetWorkflowRun = workFlowPaylod?.workflow_run
+  core.info(`Target workflow run: ${JSON.stringify(targetWorkflowRun)}`)
+  const headSha = workFlowPaylod?.pull_request?.head?.sha ?? targetWorkflowRun?.head_sha ?? sha;
   const sender = workFlowPaylod?.sender?.login;
+  let refFromTargetWorkflow: string | null = null;
+  if (targetWorkflowRun?.head_branch != null) {
+    refFromTargetWorkflow = `refs/heads/${targetWorkflowRun.head_branch}`
+  }
+  core.info(`ref from workflow target: ${refFromTargetWorkflow}`)
   // Notify build failures if its copybara-bot merging the changes.
   const notifyOnFailure = sender === 'copybara-service[bot]';
 
   const additionalPayload = JSON.parse(payload);
   const requestBody = {
     'workflow': workflow,
-    'repo': repo,
-    'ref': ref,
+    'repo': targetWorkflowRun?.head_repository?.full_name ?? repo,
+    'ref': refFromTargetWorkflow ?? ref,
     'sha': headSha,
     'notifyOnFailure': notifyOnFailure,
     ...additionalPayload
