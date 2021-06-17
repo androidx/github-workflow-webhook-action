@@ -3,6 +3,11 @@ import core = require('@actions/core');
 import github = require('@actions/github');
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 
+interface Repo {
+  repo: string;
+  owner: string;
+}
+
 async function deliver(url: string, secret: string, payload: string): Promise<AxiosPromise<{}>> {
   const workflow = github.context.workflow;
   const repo = github.context.repo;
@@ -29,7 +34,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
     refFromTargetWorkflow = `refs/heads/${targetWorkflowRun.head_branch}`
   }
 
-  let repoFromTargetWorkflow: object | null = null;
+  let repoFromTargetWorkflow: Repo | null = null;
   if (targetWorkflowRun?.head_repository?.owner?.login &&
     targetWorkflowRun?.head_repository?.name) {
     repoFromTargetWorkflow = {
