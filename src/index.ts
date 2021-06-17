@@ -3,6 +3,11 @@ import core = require('@actions/core');
 import github = require('@actions/github');
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 
+interface Repo {
+  repo: string;
+  owner: string;
+}
+
 async function deliver(url: string, secret: string, payload: string): Promise<AxiosPromise<{}>> {
   const workflow = github.context.workflow;
   const repo = github.context.repo;
@@ -29,13 +34,23 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
     refFromTargetWorkflow = `refs/heads/${targetWorkflowRun.head_branch}`
   }
   core.info(`ref from workflow target: ${refFromTargetWorkflow}`)
+
+  let repoFromTargetWorkflow: Repo | null = null;
+  if (targetWorkflowRun?.head_repository?.owner?.login &&
+    targetWorkflowRun?.head_repository?.name) {
+    repoFromTargetWorkflow = {
+      "owner": targetWorkflowRun.head_repository.owner.login,
+      "repo": targetWorkflowRun.head_repository.name
+    }
+  }
+  core.info(`repo from workflow target: ${JSON.stringify(repoFromTargetWorkflow)}`)
   // Notify build failures if its copybara-bot merging the changes.
   const notifyOnFailure = sender === 'copybara-service[bot]';
 
   const additionalPayload = JSON.parse(payload);
   const requestBody = {
     'workflow': workflow,
-    'repo': targetWorkflowRun?.head_repository?.full_name ?? repo,
+    'repo': repoFromTargetWorkflow ?? repo,
     'ref': refFromTargetWorkflow ?? ref,
     'sha': headSha,
     'notifyOnFailure': notifyOnFailure,
