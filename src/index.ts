@@ -43,7 +43,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
       "repo": targetWorkflowRun.head_repository.name
     }
   }
-  core.info(`repo from workflow target: ${repoFromTargetWorkflow}`)
+  core.info(`repo from workflow target: ${JSON.stringify(repoFromTargetWorkflow)}`)
   // Notify build failures if its copybara-bot merging the changes.
   const notifyOnFailure = sender === 'copybara-service[bot]';
 

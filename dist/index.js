@@ -9992,7 +9992,7 @@ function deliver(url, secret, payload) {
         };
       }
 
-      core.info("repo from workflow target: " + repoFromTargetWorkflow);
+      core.info("repo from workflow target: " + JSON.stringify(repoFromTargetWorkflow));
       notifyOnFailure = sender === 'copybara-service[bot]';
       additionalPayload = JSON.parse(payload);
       requestBody = __assign({
