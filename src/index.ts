@@ -28,6 +28,15 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   if (targetWorkflowRun?.head_branch) {
     refFromTargetWorkflow = `refs/heads/${targetWorkflowRun.head_branch}`
   }
+
+  let repoFromTargetWorkflow: object | null = null;
+  if (targetWorkflowRun?.head_repository?.owner?.login &&
+    targetWorkflowRun?.head_repository?.name) {
+    repoFromTargetWorkflow = {
+      "owner": targetWorkflowRun.head_repository.owner.login,
+      "repo": targetWorkflowRun.head_repository.name
+    }
+  }
   core.info(`ref from workflow target: ${refFromTargetWorkflow}`)
   // Notify build failures if its copybara-bot merging the changes.
   const notifyOnFailure = sender === 'copybara-service[bot]';
@@ -35,7 +44,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   const additionalPayload = JSON.parse(payload);
   const requestBody = {
     'workflow': workflow,
-    'repo': targetWorkflowRun?.head_repository?.full_name ?? repo,
+    'repo': repoFromTargetWorkflow ?? repo,
     'ref': refFromTargetWorkflow ?? ref,
     'sha': headSha,
     'notifyOnFailure': notifyOnFailure,

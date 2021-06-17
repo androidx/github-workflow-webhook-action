@@ -9952,11 +9952,11 @@ var github = require("@actions/github");
 var axios_1 = __importDefault(require("axios"));
 
 function deliver(url, secret, payload) {
-  var _a, _b, _c, _d, _e, _f, _g;
+  var _a, _b, _c, _d, _e, _f, _g, _h;
 
   return __awaiter(this, void 0, Promise, function () {
-    var workflow, repo, ref, sha, workFlowPaylod, GITHUB_RUN_ID, contextUrl, targetWorkflowRun, headSha, sender, refFromTargetWorkflow, notifyOnFailure, additionalPayload, requestBody, requestConfig, response;
-    return __generator(this, function (_h) {
+    var workflow, repo, ref, sha, workFlowPaylod, GITHUB_RUN_ID, contextUrl, targetWorkflowRun, headSha, sender, refFromTargetWorkflow, repoFromTargetWorkflow, notifyOnFailure, additionalPayload, requestBody, requestConfig, response;
+    return __generator(this, function (_j) {
       workflow = github.context.workflow;
       repo = github.context.repo;
       ref = github.context.ref;
@@ -9982,12 +9982,21 @@ function deliver(url, secret, payload) {
         refFromTargetWorkflow = "refs/heads/" + targetWorkflowRun.head_branch;
       }
 
+      repoFromTargetWorkflow = null;
+
+      if (((_g = (_f = targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.head_repository) === null || _f === void 0 ? void 0 : _f.owner) === null || _g === void 0 ? void 0 : _g.login) && ((_h = targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.head_repository) === null || _h === void 0 ? void 0 : _h.name)) {
+        repoFromTargetWorkflow = {
+          "owner": targetWorkflowRun.head_repository.owner.login,
+          "repo": targetWorkflowRun.head_repository.name
+        };
+      }
+
       core.info("ref from workflow target: " + refFromTargetWorkflow);
       notifyOnFailure = sender === 'copybara-service[bot]';
       additionalPayload = JSON.parse(payload);
       requestBody = __assign({
         'workflow': workflow,
-        'repo': (_g = (_f = targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.head_repository) === null || _f === void 0 ? void 0 : _f.full_name) !== null && _g !== void 0 ? _g : repo,
+        'repo': repoFromTargetWorkflow !== null && repoFromTargetWorkflow !== void 0 ? repoFromTargetWorkflow : repo,
         'ref': refFromTargetWorkflow !== null && refFromTargetWorkflow !== void 0 ? refFromTargetWorkflow : ref,
         'sha': headSha,
         'notifyOnFailure': notifyOnFailure
