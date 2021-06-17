@@ -9982,6 +9982,7 @@ function deliver(url, secret, payload) {
         refFromTargetWorkflow = "refs/heads/" + targetWorkflowRun.head_branch;
       }
 
+      core.info("ref from workflow target: " + refFromTargetWorkflow);
       repoFromTargetWorkflow = null;
 
       if (((_g = (_f = targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.head_repository) === null || _f === void 0 ? void 0 : _f.owner) === null || _g === void 0 ? void 0 : _g.login) && ((_h = targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.head_repository) === null || _h === void 0 ? void 0 : _h.name)) {
@@ -9991,7 +9992,7 @@ function deliver(url, secret, payload) {
         };
       }
 
-      core.info("ref from workflow target: " + refFromTargetWorkflow);
+      core.info("repo from workflow target: " + repoFromTargetWorkflow);
       notifyOnFailure = sender === 'copybara-service[bot]';
       additionalPayload = JSON.parse(payload);
       requestBody = __assign({

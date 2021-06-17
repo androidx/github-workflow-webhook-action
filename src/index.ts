@@ -33,6 +33,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   if (targetWorkflowRun?.head_branch) {
     refFromTargetWorkflow = `refs/heads/${targetWorkflowRun.head_branch}`
   }
+  core.info(`ref from workflow target: ${refFromTargetWorkflow}`)
 
   let repoFromTargetWorkflow: Repo | null = null;
   if (targetWorkflowRun?.head_repository?.owner?.login &&
@@ -42,7 +43,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
       "repo": targetWorkflowRun.head_repository.name
     }
   }
-  core.info(`ref from workflow target: ${refFromTargetWorkflow}`)
+  core.info(`repo from workflow target: ${repoFromTargetWorkflow}`)
   // Notify build failures if its copybara-bot merging the changes.
   const notifyOnFailure = sender === 'copybara-service[bot]';
 
