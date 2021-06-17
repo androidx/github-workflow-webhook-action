@@ -25,7 +25,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   const headSha = workFlowPaylod?.pull_request?.head?.sha ?? targetWorkflowRun?.head_sha ?? sha;
   const sender = workFlowPaylod?.sender?.login;
   let refFromTargetWorkflow: string | null = null;
-  if (targetWorkflowRun?.head_branch != null) {
+  if (targetWorkflowRun?.head_branch) {
     refFromTargetWorkflow = `refs/heads/${targetWorkflowRun.head_branch}`
   }
   core.info(`ref from workflow target: ${refFromTargetWorkflow}`)

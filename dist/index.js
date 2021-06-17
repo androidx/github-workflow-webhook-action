@@ -9978,7 +9978,7 @@ function deliver(url, secret, payload) {
       sender = (_e = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.sender) === null || _e === void 0 ? void 0 : _e.login;
       refFromTargetWorkflow = null;
 
-      if ((targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.head_branch) != null) {
+      if (targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.head_branch) {
         refFromTargetWorkflow = "refs/heads/" + targetWorkflowRun.head_branch;
       }
 
