@@ -9955,7 +9955,7 @@ function deliver(url, secret, payload) {
   var _a, _b, _c, _d, _e, _f, _g, _h;
 
   return __awaiter(this, void 0, Promise, function () {
-    var workflow, repo, ref, sha, workFlowPaylod, GITHUB_RUN_ID, contextUrl, targetWorkflowRun, headSha, sender, additionalContextInfo, refFromTargetWorkflow, repoFromTargetWorkflow, notifyOnFailure, additionalPayload, requestBody, requestConfig, response;
+    var workflow, repo, ref, sha, workFlowPaylod, GITHUB_RUN_ID, contextUrl, targetWorkflowRun, headSha, sender, additionalContext, refFromTargetWorkflow, repoFromTargetWorkflow, notifyOnFailure, additionalPayload, requestBody, requestConfig, response;
     return __generator(this, function (_j) {
       workflow = github.context.workflow;
       repo = github.context.repo;
@@ -9976,7 +9976,7 @@ function deliver(url, secret, payload) {
       core.info("Target workflow run: " + JSON.stringify(targetWorkflowRun));
       headSha = (_d = (_c = (_b = (_a = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.pull_request) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.sha) !== null && _c !== void 0 ? _c : targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.head_sha) !== null && _d !== void 0 ? _d : sha;
       sender = (_e = workFlowPaylod === null || workFlowPaylod === void 0 ? void 0 : workFlowPaylod.sender) === null || _e === void 0 ? void 0 : _e.login;
-      additionalContextInfo = null;
+      additionalContext = null;
       refFromTargetWorkflow = null;
 
       if (targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.head_branch) {
@@ -9984,7 +9984,7 @@ function deliver(url, secret, payload) {
       }
 
       if ((targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.name) && (targetWorkflowRun === null || targetWorkflowRun === void 0 ? void 0 : targetWorkflowRun.html_url)) {
-        additionalContextInfo = "This workflow was triggered by \"" + targetWorkflowRun.name + "\" (" + targetWorkflowRun.html_url + ")";
+        additionalContext = "This workflow was triggered by \"" + targetWorkflowRun.name + "\" (" + targetWorkflowRun.html_url + ")";
       }
 
       core.info("ref from workflow target: " + refFromTargetWorkflow);
@@ -10006,7 +10006,7 @@ function deliver(url, secret, payload) {
         'ref': refFromTargetWorkflow !== null && refFromTargetWorkflow !== void 0 ? refFromTargetWorkflow : ref,
         'sha': headSha,
         'notifyOnFailure': notifyOnFailure,
-        'additionalContextInfo': additionalContextInfo
+        'additionalContext': additionalContext
       }, additionalPayload);
 
       if (contextUrl) {

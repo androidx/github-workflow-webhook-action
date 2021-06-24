@@ -29,13 +29,13 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
   core.info(`Target workflow run: ${JSON.stringify(targetWorkflowRun)}`)
   const headSha = workFlowPaylod?.pull_request?.head?.sha ?? targetWorkflowRun?.head_sha ?? sha;
   const sender = workFlowPaylod?.sender?.login;
-  let additionalContextInfo: string | null = null;
+  let additionalContext: string | null = null;
   let refFromTargetWorkflow: string | null = null;
   if (targetWorkflowRun?.head_branch) {
     refFromTargetWorkflow = `refs/heads/${targetWorkflowRun.head_branch}`
   }
   if (targetWorkflowRun?.name && targetWorkflowRun?.html_url) {
-    additionalContextInfo = `This workflow was triggered by "${targetWorkflowRun.name}" (${targetWorkflowRun.html_url})`
+    additionalContext = `This workflow was triggered by "${targetWorkflowRun.name}" (${targetWorkflowRun.html_url})`
   }
   core.info(`ref from workflow target: ${refFromTargetWorkflow}`)
 
@@ -58,7 +58,7 @@ async function deliver(url: string, secret: string, payload: string): Promise<Ax
     'ref': refFromTargetWorkflow ?? ref,
     'sha': headSha,
     'notifyOnFailure': notifyOnFailure,
-    'additionalContextInfo': additionalContextInfo,
+    'additionalContext': additionalContext,
     ...additionalPayload
   };
 
